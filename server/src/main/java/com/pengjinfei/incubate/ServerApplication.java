@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 @Slf4j
+//@MapperScan("com.pengjinfei.incubate.mapper")
 public class ServerApplication {
 
     public static void main(String[] args) {
