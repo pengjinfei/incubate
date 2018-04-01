@@ -1,0 +1,11 @@
+insert into user (name, age) value ('pjf', 29);
+insert into user (name, age) value ('中文', 30);
+insert into user (name, age) value ('zhangsan', 31);
+insert into user (name, age) value ('lisi', 32);
+insert into user (name, age) value ('wangwu', 32);
+insert into user (name, age) value ('zhuliu', 34);
+insert into user (name, age) value ('linux', 37);
+insert into user (name, age) value ('mac', 38);
+insert into user (name, age) value ('windows', 38);
+insert into user (name, age) value ('iphonex', 35);
+insert into user (name, age) value ('andriod', 43);

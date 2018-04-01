@@ -1,11 +1,19 @@
-#mybatis:
-#  type-aliases-package: com.pengjinfei.incubate.model
-#  configuration:
-#    map-underscore-to-camel-case: true
-#  mapper-locations: classpath:/mappers
+mybatis:
+  type-aliases-package: com.pengjinfei.incubate.model
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: db/mappers/*.xml
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.101.13:3306/xxl-job
+    url: jdbc:mysql://192.168.101.13:3306/test?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: mysql
+pagehelper:
+  helperDialect: mysql
+  support-methods-arguments: true
+mapper:
+  not-empty: false
+  before: false
+  identity: MYSQL
+
