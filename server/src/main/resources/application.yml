@@ -1,3 +1,9 @@
+host: 192.168.101.4
+poolSize: 20
+zk:
+  server: ${host}:2181
+  namespace: server
+
 mybatis:
   type-aliases-package: com.pengjinfei.incubate.model
   configuration:
@@ -6,9 +12,11 @@ mybatis:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.101.13:3306/test?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://${host}:3306/test?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: mysql
+  redis:
+    host: ${host}
 pagehelper:
   helperDialect: mysql
   support-methods-arguments: true

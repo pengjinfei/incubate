@@ -57,14 +57,14 @@ public class MybatisController {
         return user.getId();
     }
 
-    @PostMapping("/normalbatch")
+    @PostMapping("/batch")
     public void batchInsert() {
-        userService.normalInsert(getMultiUser(1000));
+        userService.batchInsert(getMultiUser(1000));
     }
 
-    @PostMapping("/batch")
+    @PostMapping("/normalbatch")
     public void normalInsert() {
-        userService.batchInsert(getMultiUser(100));
+        userService.normalInsert(getMultiUser(1000));
     }
 
     private List<User> getMultiUser(int num) {

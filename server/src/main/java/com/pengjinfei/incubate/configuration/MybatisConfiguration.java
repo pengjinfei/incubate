@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Created on 4/1/18
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Pengjinfei
  */
 @Configuration
+@EnableTransactionManagement
 @MapperScan(value = "com.pengjinfei.incubate.mapper",sqlSessionTemplateRef = "simpleSqlTemplate")
 public class MybatisConfiguration {
 

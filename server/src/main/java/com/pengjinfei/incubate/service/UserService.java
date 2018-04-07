@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
     public void batchInsert(List<User> users) {
         UserMapper mapper = batchSqlTemplate.getMapper(UserMapper.class);
         for (User user : users) {
