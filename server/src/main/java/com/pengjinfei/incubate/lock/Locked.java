@@ -1,7 +1,6 @@
 package com.pengjinfei.incubate.lock;
 
 import java.lang.annotation.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 4/7/18
@@ -14,8 +13,4 @@ import java.util.concurrent.TimeUnit;
 public @interface Locked {
 
     String value() default "";
-
-    TimeUnit timeUnit() default TimeUnit.SECONDS;
-
-    long time() default -1;
 }
