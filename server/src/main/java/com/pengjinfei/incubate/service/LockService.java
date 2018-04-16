@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LockService {
 
-    @Locked
+    @Locked("test")
     public void testLock() {
         log.info("i get lock");
     }

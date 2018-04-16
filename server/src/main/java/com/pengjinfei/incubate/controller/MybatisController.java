@@ -2,6 +2,9 @@ package com.pengjinfei.incubate.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pengjinfei.incubate.dto.OrdersDTO;
+import com.pengjinfei.incubate.dto.UserDTO;
+import com.pengjinfei.incubate.mapper.OrdersMapper;
 import com.pengjinfei.incubate.mapper.UserMapper;
 import com.pengjinfei.incubate.model.User;
 import com.pengjinfei.incubate.service.UserService;
@@ -28,12 +31,42 @@ public class MybatisController {
     private UserMapper userMapper;
 
     @Autowired
+    private OrdersMapper ordersMapper;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping("/users/{id}")
-    public User test(@PathVariable("id") Integer  id) {
+    public UserDTO selectOrdersByUserId(@PathVariable("id") Integer  id) {
         log.info("test sleuth");
-        return userMapper.selectById(id);
+        return userMapper.selectOrdersByUserId(id);
+    }
+
+    @GetMapping("/tags/{id}")
+    public User selectTags(@PathVariable("id") Integer  id) {
+        return userMapper.selectTags(id);
+    }
+
+	@GetMapping("/auto/user/{id}")
+	public User selectByPrimaryKey(@PathVariable("id") Integer  id) {
+		return userMapper.selectByPrimaryKey(id);
+	}
+
+	@PostMapping("/auto/user")
+	public User insertSelective(@RequestBody User user) {
+		userMapper.insertSelective(user);
+		return user;
+	}
+
+    @PostMapping("/tags")
+    public User addUserTags(@RequestBody User user) {
+    	userMapper.insertTags(user);
+		return user;
+    }
+
+    @GetMapping("/orders/{id}")
+    public OrdersDTO selectOrderAndUser(@PathVariable("id") Integer  id) {
+        return ordersMapper.selectOrderAndUser(id);
     }
 
     @GetMapping("/users/page")
@@ -59,7 +92,7 @@ public class MybatisController {
 
     @PostMapping("/batch")
     public void batchInsert() {
-        userService.batchInsert(getMultiUser(1000));
+        userService.batchInsert(getMultiUser(10000));
     }
 
     @PostMapping("/normalbatch")

@@ -1,4 +1,4 @@
-package com.pengjinfei.incubate.configuration;
+package com.pengjinfei.incubate.configuration.mybatis;
 
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;

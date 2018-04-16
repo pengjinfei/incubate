@@ -20,7 +20,7 @@ public class ZkLock implements Lock {
     @Override
     public void release(String path) {
         try {
-            zkClient.delete().guaranteed().forPath(path.startsWith("/") ? path : "/" + path);
+            zkClient.delete().guaranteed().forPath(getReasonablePath(path));
         } catch (Exception e) {
             log.error(String.format("release lock %s failed.",path),e);
         }
@@ -32,10 +32,14 @@ public class ZkLock implements Lock {
             zkClient.create()
                     .creatingParentsIfNeeded()
                     .withMode(CreateMode.EPHEMERAL)
-                    .forPath(path.startsWith("/") ? path : "/" + path);
+                    .forPath(getReasonablePath(path));
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private String getReasonablePath(String origin) {
+        return origin.startsWith("/") ? origin : "/" + origin;
     }
 }

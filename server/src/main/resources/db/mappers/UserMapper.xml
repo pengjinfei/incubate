@@ -5,10 +5,41 @@
         insert into user(name, age) value (#{name},#{age})
     </insert>
 
-    <select id="selectById" resultType="com.pengjinfei.incubate.model.User">
-        select *
-        from user
-        where id = #{id}
+    <insert id="insertTags" keyProperty="id" useGeneratedKeys="true">
+        insert into user (name, age,tags) value (#{name},#{age},#{tags,javaType=List,jdbcType=VARCHAR,typeHandler=com.pengjinfei.incubate.configuration.mybatis.ListStringTypeHandler})
+    </insert>
+
+    <resultMap id="userTags" type="com.pengjinfei.incubate.model.User">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="tags" property="tags" javaType="list" jdbcType="VARCHAR"
+                typeHandler="com.pengjinfei.incubate.configuration.mybatis.ListStringTypeHandler"/>
+    </resultMap>
+
+    <select id="selectTags" resultMap="userTags">
+        select id,name,age,tags
+        from user u
+        where u.id =#{id}
+    </select>
+
+    <resultMap type="com.pengjinfei.incubate.dto.UserDTO" id="userOrders">
+        <id column="userId" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+
+        <collection property="ordersList" ofType="com.pengjinfei.incubate.model.Orders">
+            <id column="orderId" property="id"/>
+            <result column="osId" property="userId"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="selectOrdersByUserId" resultMap="userOrders">
+        select u.id userId,u.name name,u.age age,s.id orderId,s.user_id osId,s.price price
+        from user u inner join orders s on u.id=s.user_id
+        where u.id = #{id}
     </select>
     <select id="selectAutoPage" resultType="com.pengjinfei.incubate.model.User">
         select *
