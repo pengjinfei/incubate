@@ -26,4 +26,4 @@ mapper:
   not-empty: false
   before: false
   identity: MYSQL
-
+  enum-as-simple-type: true

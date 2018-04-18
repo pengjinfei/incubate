@@ -1,6 +1,8 @@
 package com.pengjinfei.incubate.model;
 
 import com.pengjinfei.incubate.configuration.mybatis.ListStringTypeHandler;
+import com.pengjinfei.incubate.configuration.mybatis.SexEnumTypeHandler;
+import com.pengjinfei.incubate.enums.SEX;
 import lombok.Data;
 import tk.mybatis.mapper.annotation.ColumnType;
 
@@ -24,4 +26,6 @@ public class User {
     private Integer age;
     @ColumnType(typeHandler = ListStringTypeHandler.class)
     private List<String> tags;
+    @ColumnType(typeHandler = SexEnumTypeHandler.class)
+    private SEX sex;
 }
