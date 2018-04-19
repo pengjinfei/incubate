@@ -1,19 +1,14 @@
 package com.pengjinfei.incubate.lock;
 
-import com.pengjinfei.incubate.common.AnnotationClassOrMethodPointcut;
+import com.pengjinfei.incubate.common.AbstractCachedInterceptor;
+import com.pengjinfei.incubate.common.CommonAnnotationMethodPointcut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.Pointcut;
-import org.springframework.aop.support.AbstractPointcutAdvisor;
-import org.springframework.core.annotation.AnnotationUtils;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 
 /**
  * Created on 4/7/18
@@ -22,16 +17,13 @@ import java.util.Map;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class LockAdvisor extends AbstractPointcutAdvisor {
+public class LockAdvisor extends AbstractBeanFactoryPointcutAdvisor {
 
     private final Lock lock;
 
-    private final Map<Object, Map<Method, Locked>> delegates =
-            new HashMap<>();
-
     @Override
     public Pointcut getPointcut() {
-        return new AnnotationClassOrMethodPointcut(Locked.class);
+        return new CommonAnnotationMethodPointcut(Locked.class);
     }
 
     @Override
@@ -39,35 +31,13 @@ public class LockAdvisor extends AbstractPointcutAdvisor {
         return new LockInterceptor();
     }
 
-    private class LockInterceptor implements MethodInterceptor {
+    private class LockInterceptor extends AbstractCachedInterceptor<Locked>{
 
         @Override
-        public Object invoke(MethodInvocation invocation) throws Throwable {
-            Method method = invocation.getMethod();
-            Object target = invocation.getThis();
-            Locked locked;
-            if (delegates.containsKey(target) && delegates.get(target).containsKey(method)) {
-                locked = delegates.get(target).get(method);
-            } else {
-                synchronized (delegates) {
-                    if (!delegates.containsKey(target)) {
-                        delegates.put(target, new HashMap<>(8));
-                    }
-                    Map<Method, Locked> lockedMap = delegates.get(target);
-                    locked = AnnotationUtils.findAnnotation(method, Locked.class);
-                    if (locked == null) {
-                        Method targetMethod = target.getClass().getMethod(method.getName(), method.getParameterTypes());
-                        locked = AnnotationUtils.findAnnotation(targetMethod, Locked.class);
-                    }
-                    lockedMap.put(method, locked);
-                }
-            }
-            if (locked == null) {
-                return invocation.proceed();
-            }
+        protected Object doWithFound(MethodInvocation invocation, Locked locked) throws Throwable{
             String path = locked.value();
             if (StringUtils.isEmpty(path)) {
-                path = target.getClass().getSimpleName() + "_" + method.getName();
+                path = invocation.getThis().getClass().getSimpleName() + "_" + invocation.getMethod().getName();
             }
             boolean locker;
             try {

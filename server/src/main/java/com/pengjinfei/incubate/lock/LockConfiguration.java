@@ -2,6 +2,7 @@ package com.pengjinfei.incubate.lock;
 
 import com.pengjinfei.incubate.lock.impl.RedisLock;
 import com.pengjinfei.incubate.lock.impl.ZkLock;
+import com.pengjinfei.incubate.redis.RedisService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * Created on 4/7/18
@@ -40,7 +40,7 @@ public class LockConfiguration {
     }
 
     @Bean
-    public Lock redisLock(RedisTemplate<String, Object> redisTemplate) {
-        return new RedisLock("lock", redisTemplate);
+    public Lock redisLock(RedisService redisService) {
+        return new RedisLock("lock", redisService);
     }
 }

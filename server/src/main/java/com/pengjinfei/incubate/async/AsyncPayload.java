@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author Pengjinfei
  */
 @Data
-public class AsyncMeta implements Serializable {
+public class AsyncPayload implements Serializable {
     private String beanName;
     private String methodName;
     private Object[] args;

@@ -19,6 +19,15 @@ import java.util.List;
 @Data
 public class User {
 
+    public User(Integer id, Integer age) {
+        this.id = id;
+        this.age = age;
+    }
+
+    public User() {
+
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
