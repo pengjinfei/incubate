@@ -9,6 +9,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
+import org.springframework.core.Ordered;
 
 /**
  * Created on 4/7/18
@@ -41,6 +42,7 @@ public class LockAdvisor extends AbstractBeanFactoryPointcutAdvisor {
             }
             boolean locker;
             try {
+                log.info("try to ge lock {}", path);
                 locker = lock.tryLock(path);
             } catch (Exception e) {
                 log.error(String.format("get lock for path %s error", path), e);
@@ -50,11 +52,17 @@ public class LockAdvisor extends AbstractBeanFactoryPointcutAdvisor {
                 return null;
             }
             try {
+                log.info("get lock {} success",path);
                 return invocation.proceed();
             } finally {
                 lock.release(path);
+                log.info("release {} lock success.", path);
             }
         }
     }
 
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE +1000;
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Role;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 /**
@@ -50,5 +51,9 @@ public class AsyncAdvisor extends AbstractPointcutAdvisor {
 	}
 
 
+	@Override
+	public int getOrder() {
+		return Ordered.HIGHEST_PRECEDENCE + 900;
+	}
 }
 

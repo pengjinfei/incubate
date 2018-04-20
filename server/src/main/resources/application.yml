@@ -2,9 +2,11 @@ host: 192.168.101.4
 poolSize: 20
 zk:
   server: ${host}:2181
-  namespace: server
+  namespace: incubate
   lock:
-    namespace: lock
+    namespace: ${zk.namespace}/lock
+  elastic-job:
+    namespace: ${zk.namespace}/job
 
 mybatis:
   type-aliases-package: com.pengjinfei.incubate.model

@@ -27,7 +27,7 @@ public class LockConfiguration {
         return new LockAdvisor(zkLock);
     }
 
-    //@Bean
+    @Bean
     public Lock zkLock(@Value("${zk.server}") String zkServer, @Value("${zk.lock.namespace}") String namespace){
         CuratorFramework framework = CuratorFrameworkFactory.builder()
                 .connectString(zkServer)
@@ -39,7 +39,7 @@ public class LockConfiguration {
         return new ZkLock(framework);
     }
 
-    @Bean
+    //@Bean
     public Lock redisLock(RedisService redisService) {
         return new RedisLock("lock", redisService);
     }
