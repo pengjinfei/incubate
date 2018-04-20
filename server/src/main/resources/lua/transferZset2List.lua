@@ -23,5 +23,4 @@ end
 if(table.getn(res)>0) then
     redis.call('ZREMRANGEBYRANK',zk,0,num-1)
 end
-local t=redis.call('llen', lk)
 return true;
