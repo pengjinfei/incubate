@@ -16,6 +16,6 @@ public class AnotherJob implements SimpleJob {
 
 	@Override
 	public void execute(ShardingContext shardingContext) {
-		log.info("runing another job");
+		log.debug("runing another job");
 	}
 }

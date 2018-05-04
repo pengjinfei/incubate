@@ -16,7 +16,7 @@ public class TestJob implements SimpleJob {
 
 	@Override
 	public void execute(ShardingContext shardingContext) {
-		log.info(shardingContext.getShardingItem() + ":" + shardingContext.getShardingTotalCount());
-		log.info("here");
+		log.debug(shardingContext.getShardingItem() + ":" + shardingContext.getShardingTotalCount());
+		log.debug("here");
 	}
 }
