@@ -124,9 +124,20 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.dangdang</groupId>
             <artifactId>elastic-job-lite-spring</artifactId>
             <version>2.1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.2.0</version>
         </dependency>
 
     </dependencies>
