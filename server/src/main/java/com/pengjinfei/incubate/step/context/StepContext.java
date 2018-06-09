@@ -20,6 +20,26 @@ public class StepContext {
 
     private String breakPointStep;
 
+    private String key;
+
+    private Exception lastException;
+
+    public Exception getLastException() {
+        return lastException;
+    }
+
+    public void setLastException(Exception lastException) {
+        this.lastException = lastException;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     private <T> T get(String key, Class<T> tClass) {
         return (T) map.get(key);
     }

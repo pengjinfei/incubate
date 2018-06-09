@@ -12,5 +12,5 @@ import java.io.Serializable;
  */
 public interface StepLauncher {
 
-    <T extends Serializable> StepContext launch(StepChain<T> chain, T params, String key);
+    <T extends Serializable> StepContext launch(StepChain<T> chain, T params, String key) throws Exception;
 }

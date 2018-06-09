@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Configuration
 @Aspect
+@EnableAspectJAutoProxy
 public class SimpleStepConfiguration implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
