@@ -37,16 +37,20 @@ public class StepNode<T extends Serializable> {
             }
         }
 
-        if (next != null && exception == null) {
-            try {
-                next.execute(t, context);
-                context.setStatus(StepStatus.COMMIT);
-            } catch (Exception e) {
-                if (e instanceof RetryableException) {
-                    throw e;
-                } else {
-                    context.setStatus(StepStatus.ROLLBACK);
+        if (exception == null) {
+            if (next != null) {
+                try {
+                    next.execute(t, context);
+                    context.setStatus(StepStatus.COMMIT);
+                } catch (Exception e) {
+                    if (e instanceof RetryableException) {
+                        throw e;
+                    } else {
+                        context.setStatus(StepStatus.ROLLBACK);
+                    }
                 }
+            } else {
+                context.setStatus(StepStatus.COMMIT);
             }
         }
 

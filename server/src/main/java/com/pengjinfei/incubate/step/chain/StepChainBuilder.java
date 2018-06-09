@@ -54,7 +54,7 @@ public class StepChainBuilder<T extends Serializable> {
         return this;
     }
 
-    public StepNode<T> build() {
+    public StepChain<T> build() {
         Assert.notNull(head,"there must have at least one step");
         Assert.notNull(name,"there must be a name for stepChain");
         StepChain<T> chain = new StepChain<>();
@@ -64,7 +64,7 @@ public class StepChainBuilder<T extends Serializable> {
             chain.setInterceptors(interceptors);
         }
         stepRepository.registerStepChain(chain);
-        return head;
+        return chain;
     }
 
 }
