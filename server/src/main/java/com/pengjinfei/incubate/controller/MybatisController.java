@@ -8,6 +8,7 @@ import com.pengjinfei.incubate.mapper.OrdersMapper;
 import com.pengjinfei.incubate.mapper.UserMapper;
 import com.pengjinfei.incubate.model.User;
 import com.pengjinfei.incubate.service.UserService;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
+@Setter
 public class MybatisController {
 
     @Autowired
