@@ -5,6 +5,7 @@ import com.pengjinfei.incubate.step.chain.StepChain;
 import com.pengjinfei.incubate.step.context.StepContext;
 import com.pengjinfei.incubate.step.context.StepContextDao;
 import com.pengjinfei.incubate.step.interceptor.StepInterceptor;
+import com.pengjinfei.incubate.step.repository.StepRepository;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
@@ -19,8 +20,11 @@ public class SimpleStepLauncher implements StepLauncher {
 
     private final StepContextDao stepContextDao;
 
-    public SimpleStepLauncher(StepContextDao stepContextDao) {
+    private final StepRepository stepRepository;
+
+    public SimpleStepLauncher(StepContextDao stepContextDao, StepRepository stepRepository) {
         this.stepContextDao = stepContextDao;
+        this.stepRepository = stepRepository;
     }
 
     @Override
@@ -58,5 +62,14 @@ public class SimpleStepLauncher implements StepLauncher {
             throw exception;
         }
         return lastContext;
+    }
+
+    @Override
+    public <T extends Serializable> StepContext launch(String chainName, T params, String key) throws Exception {
+        StepChain stepChain = stepRepository.getStepChain(chainName);
+        if (stepChain == null) {
+            throw new RuntimeException(String.format("StepChain with name %s is not exists.", chainName));
+        }
+        return launch(stepChain,params,key);
     }
 }
