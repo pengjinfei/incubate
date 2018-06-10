@@ -1,6 +1,5 @@
 package com.pengjinfei.incubate.step.chain;
 
-import com.pengjinfei.incubate.common.KeyGenerator;
 import com.pengjinfei.incubate.step.Step;
 import com.pengjinfei.incubate.step.interceptor.StepInterceptor;
 import com.pengjinfei.incubate.step.repository.StepRepository;
@@ -57,7 +56,7 @@ public class StepChainBuilder<T extends Serializable> {
         return this;
     }
 
-    public StepChainBuilder<T> key(KeyGenerator keyGenerator) {
+    public StepChainBuilder<T> key(KeyGenerator<T> keyGenerator) {
         this.keyGenerator = keyGenerator;
         return this;
     }
