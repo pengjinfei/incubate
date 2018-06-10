@@ -9,10 +9,10 @@ import com.pengjinfei.incubate.retry.context.RetryContext;
  */
 public interface AsyncRetryCallback {
 
-    void failOnce(RetryContext context, Object[] args);
+    void failOnce(RetryContext context);
 
-    void success(RetryContext context, Object[] args);
+    void success(RetryContext context);
 
-    void failFinal(RetryContext context, Object[] args);
+    void failFinal(RetryContext context);
 
 }

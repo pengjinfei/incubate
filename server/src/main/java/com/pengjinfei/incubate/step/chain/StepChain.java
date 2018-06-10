@@ -1,5 +1,6 @@
 package com.pengjinfei.incubate.step.chain;
 
+import com.pengjinfei.incubate.common.KeyGenerator;
 import com.pengjinfei.incubate.step.Named;
 import com.pengjinfei.incubate.step.interceptor.StepInterceptor;
 
@@ -19,6 +20,16 @@ public class StepChain<T extends Serializable> implements Named {
     private List<StepInterceptor<T>> interceptors = new LinkedList<>();
 
     private String name;
+
+    private KeyGenerator keyGenerator;
+
+    public KeyGenerator getKeyGenerator() {
+        return keyGenerator;
+    }
+
+    public void setKeyGenerator(KeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
+    }
 
     public StepNode<T> getHead() {
         return head;

@@ -9,5 +9,5 @@ public interface StepContextDao {
 
     void save(StepContext context);
 
-    StepContext select(String key);
+    StepContext select(String key, String stepChainName);
 }

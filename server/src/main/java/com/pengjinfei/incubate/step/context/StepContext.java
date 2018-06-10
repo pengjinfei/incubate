@@ -1,6 +1,7 @@
 package com.pengjinfei.incubate.step.context;
 
 import com.pengjinfei.incubate.step.StepStatus;
+import com.pengjinfei.incubate.step.chain.StepChain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,16 @@ public class StepContext {
     private String breakPointStep;
 
     private String key;
+
+    private StepChain stepChain;
+
+    public StepChain getStepChain() {
+        return stepChain;
+    }
+
+    public void setStepChain(StepChain stepChain) {
+        this.stepChain = stepChain;
+    }
 
     private Exception lastException;
 

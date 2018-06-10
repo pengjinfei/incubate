@@ -1,5 +1,7 @@
 package com.pengjinfei.incubate.retry.context;
 
+import com.pengjinfei.incubate.retry.AsyncRetryMeta;
+
 /**
  * Created on 6/10/18
  *
@@ -7,9 +9,9 @@ package com.pengjinfei.incubate.retry.context;
  */
 public interface RetryContextDao {
 
-    RetryContext select(String key);
+    RetryContext selectByMeta(AsyncRetryMeta meta);
 
     void save(RetryContext context);
 
-    void delete(String key);
+    void delete(RetryContext context);
 }

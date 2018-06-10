@@ -7,5 +7,5 @@ package com.pengjinfei.incubate.retry.delay;
  */
 public interface DelayCallback<T> {
 
-    void callback(T param);
+    void callback(T param) throws Exception;
 }

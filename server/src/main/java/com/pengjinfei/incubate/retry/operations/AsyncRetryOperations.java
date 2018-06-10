@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public interface AsyncRetryOperations {
 
-    Object runAndCatch(AsyncRetryMeta asyncRetryMeta) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
+    Object runAndCatch(AsyncRetryMeta asyncRetryMeta, boolean isFirstTime) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
 
     void asyncRun(AsyncRetryMeta asyncRetryMeta);
 }

@@ -1,5 +1,6 @@
 package com.pengjinfei.incubate.step.chain;
 
+import com.pengjinfei.incubate.common.KeyGenerator;
 import com.pengjinfei.incubate.step.Step;
 import com.pengjinfei.incubate.step.interceptor.StepInterceptor;
 import com.pengjinfei.incubate.step.repository.StepRepository;
@@ -24,6 +25,8 @@ public class StepChainBuilder<T extends Serializable> {
     private StepRepository stepRepository;
 
     private List<StepInterceptor<T>> interceptors = new LinkedList<>();
+
+    private KeyGenerator keyGenerator;
 
     public StepChainBuilder<T> setStepRepository(StepRepository stepRepository) {
         this.stepRepository = stepRepository;
@@ -54,12 +57,19 @@ public class StepChainBuilder<T extends Serializable> {
         return this;
     }
 
+    public StepChainBuilder<T> key(KeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
+        return this;
+    }
+
     public StepChain<T> build() {
         Assert.notNull(head,"there must have at least one step");
         Assert.notNull(name,"there must be a name for stepChain");
+        Assert.notNull(keyGenerator,"there must be a keyGenerator for stepChain");
         StepChain<T> chain = new StepChain<>();
         chain.setName(name);
         chain.setHead(head);
+        chain.setKeyGenerator(keyGenerator);
         if (!CollectionUtils.isEmpty(interceptors)) {
             chain.setInterceptors(interceptors);
         }

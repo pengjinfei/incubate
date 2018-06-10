@@ -1,6 +1,7 @@
 package com.pengjinfei.incubate.retry.operations;
 
 import com.pengjinfei.incubate.retry.AsyncRetryMeta;
+import com.pengjinfei.incubate.retry.callback.AsyncRetryCallback;
 import com.pengjinfei.incubate.retry.context.RetryContext;
 import com.pengjinfei.incubate.retry.context.RetryContextDao;
 import com.pengjinfei.incubate.retry.delay.DelayCallback;
@@ -9,6 +10,7 @@ import com.pengjinfei.incubate.retry.policy.DelayTime;
 import com.pengjinfei.incubate.retry.policy.RetryPolicy;
 import com.pengjinfei.incubate.retry.properties.AsyncRetryProperties;
 import com.pengjinfei.incubate.retry.registry.AsyncRetryRegistry;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +33,7 @@ import java.util.List;
  * @author jinfei
  */
 @Component
+@Slf4j
 public class AsyncRetryTemplate implements AsyncRetryOperations,ApplicationContextAware,DelayCallback<AsyncRetryMeta> {
 
     private AsyncRetryRegistry asyncRetryRegistry;
@@ -55,38 +58,89 @@ public class AsyncRetryTemplate implements AsyncRetryOperations,ApplicationConte
     }
 
     @Override
-    public Object runAndCatch(AsyncRetryMeta asyncRetryMeta) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public Object runAndCatch(AsyncRetryMeta asyncRetryMeta, boolean isFirstTime) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object bean = applicationContext.getBean(asyncRetryMeta.getBeanName());
         Class<?> userClass = ClassUtils.getUserClass(bean);
         Class<?>[] paramType = new Class[asyncRetryMeta.getArgs().length];
         for (int j = 0; j < paramType.length; j++) {
             paramType[j] = asyncRetryMeta.getArgs()[j].getClass();
         }
+        RetryContext context = null;
+        if (!isFirstTime) {
+            context = retryContextDao.selectByMeta(asyncRetryMeta);
+        }
+        if (context == null) {
+            context = new RetryContext();
+            List<Date> retryTimes = new LinkedList<>();
+            context.setRetryTimes(retryTimes);
+        }
+        context.setMeta(asyncRetryMeta);
+        AsyncRetryProperties retryProperties = asyncRetryRegistry.get(asyncRetryMeta.getBeanName(), asyncRetryMeta.getMethodName());
+        AsyncRetryCallback callback = retryProperties.getCallback();
         try {
             Method method = userClass.getMethod(asyncRetryMeta.getMethodName(), paramType);
             method.setAccessible(true);
-            return method.invoke(bean, asyncRetryMeta.getArgs());
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw e;
+            Object res = method.invoke(bean, asyncRetryMeta.getArgs());
+            if (callback != null) {
+                try {
+                    callback.success(context);
+                } catch (Exception e) {
+                    log.error("success callback failed.", e);
+                }
+            }
+            return res;
         } catch (Exception e) {
-            AsyncRetryProperties retryProperties = asyncRetryRegistry.get(asyncRetryMeta.getBeanName(), asyncRetryMeta.getMethodName());
-            boolean exRetry = retryFor(retryProperties, e);
+            context.setLastException(e);
+            boolean exRetry = true;
+            Throwable throwable = e;
+            if (e instanceof NoSuchMethodException || e instanceof IllegalAccessException) {
+                exRetry = false;
+            } else if (e instanceof InvocationTargetException) {
+                throwable = ((InvocationTargetException) e).getTargetException();
+            }
             if (exRetry) {
-                RetryContext context = new RetryContext();
-                context.setLastException(e);
-                List<Date> retryTimes = new LinkedList<>();
-                retryTimes.add(new Date());
-                context.setRetryTimes(retryTimes);
-                retryContextDao.save(context);
+                exRetry = retryFor(retryProperties, throwable);
+            }
+            boolean failFinal = true;
+            if (exRetry) {
                 RetryPolicy retryPolicy = retryProperties.getRetryPolicy();
                 DelayTime nextRetryDelayTime = retryPolicy.getNextRetryDelayTime(context);
-                delayor.delay(asyncRetryMeta,nextRetryDelayTime);
+                if (nextRetryDelayTime != null) {
+                    context.getRetryTimes().add(new Date());
+                    context.setLastDelayTime(nextRetryDelayTime);
+                    retryContextDao.save(context);
+                    failFinal = false;
+                    delayor.delay(asyncRetryMeta, nextRetryDelayTime);
+                    if (callback != null) {
+                        try {
+                            callback.failOnce(context);
+                        } catch (Exception e1) {
+                            log.error("failonce callback failed.", e1);
+                        }
+                    }
+                }
             }
-            throw e;
+
+            if (failFinal && callback !=null) {
+                try {
+                    callback.failFinal(context);
+                } catch (Exception e1) {
+                    log.error("failFinal callback failed", e1);
+                }
+            }
+
+            if (failFinal && !isFirstTime) {
+                retryContextDao.delete(context);
+            }
+
+            if (isFirstTime) {
+                throw e;
+            }
         }
+        return null;
     }
 
-    public boolean retryFor(AsyncRetryProperties meta, Throwable ex) {
+    private boolean retryFor(AsyncRetryProperties meta, Throwable ex) {
         RollbackRuleAttribute winner = null;
         int deepest = Integer.MAX_VALUE;
         List<RollbackRuleAttribute> retryRules = meta.getRetryRules();
@@ -128,7 +182,7 @@ public class AsyncRetryTemplate implements AsyncRetryOperations,ApplicationConte
     }
 
     @Override
-    public void callback(AsyncRetryMeta param) {
-
+    public void callback(AsyncRetryMeta param) throws Exception {
+        runAndCatch(param, false);
     }
 }
